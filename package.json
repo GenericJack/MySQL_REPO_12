@@ -1,0 +1,19 @@
+{
+  "name": "mysql_repo_12",
+  "version": "1.0.0",
+  "description": "MySQL homework",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/JeehawdJack/MySQL_REPO_12.git"
+  },
+  "author": "John \"Jack\" Simeoni",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JeehawdJack/MySQL_REPO_12/issues"
+  },
+  "homepage": "https://github.com/JeehawdJack/MySQL_REPO_12#readme"
+}
