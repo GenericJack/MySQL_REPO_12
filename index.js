@@ -1,34 +1,39 @@
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 
-//establish connection
-const connection = mysql.createConnection({
+// Establish connection
+const connection = mysql.createPool({
     host: 'localhost',
     user: 'jackman',
     password: '8380',
     database: 'employee_db',
+    waitForConnections: true, // Enable connection pooling
+    connectionLimit: 10,
+    queueLimit: 0,
 });
 
-connection.connect((err) => {
-    if (err) throw err;
-    console.log('Connected to the database');
-});
+// Define the function to view departments
+async function viewDepartments() {
+    try {
+        const query = 'SELECT * FROM department';
 
-//attempt to create functions for options
-function viewDepartments() {
-    const query = 'SELECT * FROM department';
-    connection.query(query, (err, results) => {
-        if (err) throw err;
-        //display the results in a table format
+        // Use await to wait for the query to complete
+        const [results, fields] = await connection.promise().query(query);
+
+        // Display the results in a table format
         console.table(results);
-        //call function to display the main menu again
+
+        // Call the function to display the main menu again
         mainMenu();
-    });
+    } catch (err) {
+        console.error('Error fetching departments:', err);
+    }
 }
 
-function mainMenu() {
-    inquirer
-        .createPromptModule([
+// Define the main menu function
+async function mainMenu() {
+    try {
+        const answer = await inquirer.prompt([
             {
                 type: 'list',
                 name: 'action',
@@ -38,26 +43,31 @@ function mainMenu() {
                     'View all roles',
                     'View all employees',
                     'Add a department',
-                    //placeholder for more options
+                    // Placeholder for more options
                 ],
             },
-        ])
-        .then((answer) => {
-            switch (answer.action) {
-                case 'View all departments':
-                    viewDepartments();
-                    break;
-                    case 'View all roles':
-                        //call function to view all roles
-                        break;
+        ]);
 
-                    case 'View all employees':
-                        break;
-                    case 'Add a department':
-                        break;
-                    default:
-                        connection.end(); //close database connection
-                        console.log('Until next time!');
-            }
-        });
+        switch (answer.action) {
+            case 'View all departments':
+                viewDepartments();
+                break;
+            case 'View all roles':
+                // Call function to view all roles
+                break;
+
+            case 'View all employees':
+                break;
+            case 'Add a department':
+                break;
+            default:
+                connection.end(); // Close database connection
+                console.log('Until next time!');
+        }
+    } catch (err) {
+        console.error('Error in mainMenu:', err);
+    }
 }
+
+// Start the main menu
+mainMenu();
